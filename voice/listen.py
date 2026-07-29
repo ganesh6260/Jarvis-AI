@@ -1,33 +1,41 @@
-import speech_recognition as sr
+import tempfile
+import sounddevice as sd
+import soundfile as sf
+from faster_whisper import WhisperModel
+
+
+# Load Whisper model only once
+model = WhisperModel("tiny", device="cpu", compute_type="int8")
 
 
 def listen():
     """
-    Listen from the microphone and convert speech to text.
+    Record audio from microphone and convert it to text using Whisper.
     """
 
-    recognizer = sr.Recognizer()
+    samplerate = 16000
+    duration = 5  # seconds
 
-    with sr.Microphone() as source:
-        print("🎤 Listening...")
+    print("🎤 Listening...")
 
-        recognizer.adjust_for_ambient_noise(source, duration=1)
+    audio = sd.rec(
+        int(duration * samplerate),
+        samplerate=samplerate,
+        channels=1,
+        dtype="float32"
+    )
 
-        audio = recognizer.listen(source, timeout=5, phrase_time_limit=8)
+    sd.wait()
 
-    try:
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_audio:
+        sf.write(temp_audio.name, audio, samplerate)
+
         print("🔄 Recognizing...")
 
-        text = recognizer.recognize_google(audio)
+        segments, info = model.transcribe(temp_audio.name)
 
-        print(f"You said: {text}")
+        text = " ".join(segment.text for segment in segments)
 
-        return text.lower()
+    print(f"You said: {text}")
 
-    except sr.UnknownValueError:
-        print("Sorry, I could not understand.")
-        return ""
-
-    except sr.RequestError as e:
-        print(f"Speech Recognition Error: {e}")
-        return ""
+    return text.lower()
