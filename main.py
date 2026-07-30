@@ -1,17 +1,27 @@
-from voice.listen import listen
 from voice.speak import speak
+from voice.listen import listen
+from commands.command_handler import execute_command
+import time
 
 
 def main():
     print("========== JARVIS AI ==========")
 
     speak("Hello Ganesh.")
-    speak("Please say something.")
+    speak("Please say a command.")
 
-    text = listen()
+    time.sleep(2)
 
-    if text:
-        speak(f"You said {text}")
+    command = listen()
+
+    if command:
+        response = execute_command(command)
+
+        if response == "exit":
+            speak("Goodbye!")
+            return
+
+        speak(response)
 
 
 if __name__ == "__main__":
