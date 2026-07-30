@@ -1,27 +1,41 @@
+import time
+
 from voice.speak import speak
 from voice.listen import listen
+
 from commands.command_handler import execute_command
-import time
+from ai.gemini import ask_gemini
 
 
 def main():
-    print("========== JARVIS AI ==========")
+
+    print("=" * 10, "JARVIS AI", "=" * 10)
 
     speak("Hello Ganesh.")
-    speak("Please say a command.")
 
-    time.sleep(2)
+    while True:
 
-    command = listen()
+        speak("Please say a command.")
 
-    if command:
+        time.sleep(2)
+
+        command = listen()
+
+        if not command:
+            continue
+
         response = execute_command(command)
 
         if response == "exit":
-            speak("Goodbye!")
-            return
+            speak("Goodbye Ganesh.")
+            break
 
-        speak(response)
+        if response:
+            speak(response)
+
+        else:
+            ai_response = ask_gemini(command)
+            speak(ai_response)
 
 
 if __name__ == "__main__":

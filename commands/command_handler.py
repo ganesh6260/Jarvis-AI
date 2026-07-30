@@ -16,8 +16,7 @@ def execute_command(command):
         webbrowser.open("https://github.com")
         return "Opening GitHub."
 
-    elif "exit" in command:
+    elif "exit" in command or "bye" in command:
         return "exit"
 
-    else:
-        return "Sorry, I don't know that command yet."
+    return None
