@@ -1,12 +1,14 @@
 import os
 import webbrowser
 from urllib.parse import quote
+from datetime import datetime
+from utils.system_utils import take_screenshot, save_note
 
 
 def execute_command(command):
     command = command.lower().strip()
 
-    # Exit
+    # ---------- Exit ----------
     if any(word in command for word in ["exit", "bye", "goodbye"]):
         return "exit"
 
@@ -38,6 +40,30 @@ def execute_command(command):
             os.system(f'open -a "{app}"')
             return f"Opening {app}."
 
+    # ---------- Time ----------
+    if "time" in command:
+        current_time = datetime.now().strftime("%I:%M %p")
+        return f"The current time is {current_time}."
+
+    # ---------- Date ----------
+    if "date" in command or "today" in command:
+        today = datetime.now().strftime("%d %B %Y")
+        return f"Today's date is {today}."
+
+    # ---------- Day ----------
+    if "what day" in command or "day is today" in command:
+        today_day = datetime.now().strftime("%A")
+        return f"Today is {today_day}."
+
+    # ---------- Weather ----------
+    if "weather" in command:
+        webbrowser.open("https://www.google.com/search?q=weather")
+        return "Opening Weather."
+    
+    # ---------- Screenshot ----------
+    if "screenshot" in command:
+        return take_screenshot()
+
     # ---------- Google Search ----------
     if command.startswith("search "):
         query = command.replace("search ", "").strip()
@@ -61,16 +87,9 @@ def execute_command(command):
         )
         return f"Searching YouTube for {query}."
 
+    # ---------- Play Music ----------
     if command.startswith("play "):
         query = command.replace("play ", "").strip()
-        webbrowser.open(
-            f"https://www.youtube.com/results?search_query={quote(query)}"
-        )
-        return f"Playing {query} on YouTube."
-    
-        # Play Music on YouTube
-    elif command.startswith("play "):
-        query = command.replace("play ", "")
         webbrowser.open(
             f"https://www.youtube.com/results?search_query={quote(query)}"
         )
