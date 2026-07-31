@@ -63,6 +63,11 @@ def execute_command(command):
     # ---------- Screenshot ----------
     if "screenshot" in command:
         return take_screenshot()
+    
+    # ---------- Notes ----------
+    if command.startswith("note "):
+        note = command.replace("note ", "").strip()
+        return save_note(note)
 
     # ---------- Google Search ----------
     if command.startswith("search "):
