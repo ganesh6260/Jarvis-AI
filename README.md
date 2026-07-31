@@ -2,37 +2,55 @@
 
 A Python-based desktop voice assistant inspired by JARVIS. It listens to your voice, executes local commands, and falls back to **Google Gemini** for open-ended questions it doesn't recognize. Comes with both a **CLI mode** and a **PySide6 GUI mode**.
 
-> 🚧 Status: Under active development
+> ✅ Current Version: v1.0 (Voice Assistant with GUI & AI Integration)
 
 ---
 
 ## ✨ Features
 
-- 🎙️ **Voice input** via `SpeechRecognition`
-- 🔊 **Voice output (TTS)** via `pyttsx3`
-- 🧠 **AI fallback** — unrecognized commands are answered using Google Gemini
-- 💬 **Custom command handling** — extend it with your own commands
-- 🖥️ **Two interfaces**:
-  - `main.py` — simple command-line mode
-  - `gui.py` — dark-themed desktop GUI with chat log, built with PySide6
-
+- 🎙️ Voice input using SpeechRecognition
+- 🔊 Text-to-Speech using pyttsx3
+- 🤖 AI responses using Google Gemini
+- 🌐 Open websites (Google, YouTube, GitHub, Gmail, LinkedIn)
+- 💻 Launch desktop applications
+- 🔎 Google & YouTube search using voice
+- 📸 Take screenshots using voice command
+- 📝 Save notes using voice
+- ⏰ Tell current time and date
+- 🖥️ Modern PySide6 GUI
+- 💬 CLI Mode + GUI Mode
 ---
 
 ## 📁 Project Structure
 
-```
+```text
 Jarvis-AI/
-├── ai/              # Gemini API integration
-├── commands/        # Command parsing & handling logic
-├── voice/           # Speech-to-text (listen) and text-to-speech (speak)
-├── utils/           # Helper utilities
-├── config.py        # App configuration
-├── gui.py           # PySide6 desktop GUI
-├── main.py          # CLI entry point
-├── requirements.txt # Python dependencies
-└── .env.example     # Sample environment file
+│
+├── ai/
+│   ├── __init__.py
+│   └── gemini.py              # Google Gemini AI integration
+│
+├── commands/
+│   ├── __init__.py
+│   └── command_handler.py     # Voice command processing
+│
+├── voice/
+│   ├── __init__.py
+│   ├── listen.py              # Speech Recognition
+│   └── speak.py               # Text-to-Speech
+│
+├── utils/
+│   ├── __init__.py
+│   └── system_utils.py        # Screenshot & Notes utilities
+│
+├── gui.py                     # PySide6 Desktop GUI
+├── main.py                    # Command Line Version
+├── config.py                  # Application configuration
+├── requirements.txt           # Project dependencies
+├── .env.example               # Gemini API Key example
+├── .gitignore
+└── README.md
 ```
-
 ---
 
 ## 🚀 Getting Started
@@ -99,6 +117,24 @@ python gui.py
 - Say **"exit"** to close the assistant.
 
 ---
+### Supported Voice Commands
+
+- Open Google
+- Open YouTube
+- Open GitHub
+- Open Gmail
+- Open Chrome
+- Open Calculator
+- Search Python tutorial
+- Google Machine Learning
+- Play Arijit Singh songs
+- Take Screenshot
+- Save Note
+- What is the time?
+- What day is today?
+- Exit
+
+---
 
 ## 🛠️ Tech Stack
 
@@ -106,7 +142,7 @@ python gui.py
 |---------------------|----------------------|
 | Speech recognition  | `SpeechRecognition`  |
 | Text-to-speech      | `pyttsx3`             |
-| AI responses        | `google-generativeai` (Gemini) |
+| AI Responses        | Google GenAI SDK |
 | GUI                 | `PySide6`             |
 | Config management   | `python-dotenv`       |
 
@@ -124,13 +160,14 @@ Contributions, issues, and feature requests are welcome!
 
 ---
 
-## 📌 Roadmap / Ideas
+## 📌 Future Improvements
 
-- [ ] Add more offline commands (system control, app launching, web search)
-- [ ] Add unit tests for `commands/` and `ai/` modules
-- [ ] Add wake-word detection instead of manual trigger
-- [ ] Package as a standalone `.exe` for Windows
-
+- [ ] Weather information
+- [ ] Email sending
+- [ ] WhatsApp messaging
+- [ ] AI memory (conversation history)
+- [ ] Smart wake word detection ("Hey Jarvis")
+- [ ] Cross-platform packaging
 ---
 
 ## 📄 License
@@ -139,6 +176,12 @@ This project currently has no license file. Consider adding one (e.g. MIT) if yo
 
 ---
 
-## 🙋 Author
+## 👨‍💻 Author
 
-**Ganesh** — [@ganesh6260](https://github.com/ganesh6260)
+Ganesh Patel
+
+MCA (AI & IoT)
+National Institute of Technology Patna
+
+GitHub:
+https://github.com/ganesh6260
