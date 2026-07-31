@@ -8,7 +8,10 @@ from PySide6.QtWidgets import (
     QTextEdit,
     QLabel,
     QVBoxLayout,
+    QHBoxLayout,
 )
+
+from datetime import datetime
 
 from voice.listen import listen
 from voice.speak import speak
@@ -65,24 +68,42 @@ class JarvisGUI(QWidget):
         """)
   
         self.status = QLabel("🟢 Ready")
+        self.status.setStyleSheet("""
+        font-size:20px;
+        font-weight:bold;
+        color:#00ff66;
+        """)
 
         self.chat = QTextEdit()
         self.chat.setReadOnly(True)
 
-        self.button = QPushButton("🎙️ TALK TO JARVIS")
+        self.button = QPushButton("🎤 TALK TO JARVIS")
         self.button.clicked.connect(self.start_listening)
+
+        self.clear_btn = QPushButton("🧹 Clear Chat")
+        self.clear_btn.clicked.connect(self.chat.clear)
+
+        buttons = QHBoxLayout()
+        buttons.addWidget(self.button)
+        buttons.addWidget(self.clear_btn)
 
         layout = QVBoxLayout()
 
         layout.addWidget(self.title)
         layout.addWidget(self.status)
         layout.addWidget(self.chat)
-        layout.addWidget(self.button)
+        layout.addLayout(buttons)
 
         self.setLayout(layout)
 
     def log(self, text):
-        self.chat.append(text)
+        now = datetime.now().strftime("%H:%M:%S")
+
+        self.chat.append(f"[{now}] {text}")
+
+        scrollbar = self.chat.verticalScrollBar()
+
+        scrollbar.setValue(scrollbar.maximum())
 
     def start_listening(self):
         thread = threading.Thread(target=self.run_jarvis)
@@ -90,43 +111,70 @@ class JarvisGUI(QWidget):
         thread.start()
 
     def run_jarvis(self):
-
-        self.status.setText("Status : Listening...")
+        self.button.setEnabled(False)
+        self.status.setText("🟡 Listening...")
+        self.status.setStyleSheet("""
+        font-size:20px;
+        font-weight:bold;
+        color:#FFD700;
+        """)
 
         command = listen()
-
+  
         if not command:
-            self.status.setText("Status : Ready")
+            self.status.setText("🟢 Ready")
+            self.status.setStyleSheet("""
+            font-size:20px;
+            font-weight:bold;
+            color:#00ff66;
+            """)
+            self.button.setEnabled(True)
             return
 
-        self.log(f"You : {command}")
+        self.log(f"🧑 You : {command}")
 
         response = execute_command(command)
 
         if response == "exit":
 
-            self.log("Jarvis : Goodbye!")
+            self.log("🤖 Jarvis : Goodbye!")
             speak("Goodbye Ganesh")
-
+            
+            self.button.setEnabled(True)
             QApplication.quit()
             return
 
         if response:
 
-            self.log(f"Jarvis : {response}")
+            self.log(f"🤖 Jarvis : {response}")
             speak(response)
 
         else:
+            self.status.setText("🔵 Thinking...")
+            self.status.setStyleSheet("""
+            font-size:20px;
+            font-weight:bold;
+            color:#4da6ff;
+            """)
+            try:
+                answer = ask_gemini(command)
 
-            self.status.setText("Status : Thinking...")
+            except Exception:
+                answer = (
+                    "⚠️ Gemini quota reached.\n"
+                    "Offline commands are still available."
+                )
 
-            answer = ask_gemini(command)
-
-            self.log(f"Jarvis : {answer}")
-
+            self.log(f"🤖 Jarvis : {answer}")
             speak(answer)
 
-        self.status.setText("Status : Ready")
+        self.status.setText("🟢 Ready")
+        self.status.setStyleSheet("""
+        font-size:20px;
+        font-weight:bold;
+        color:#00ff66;
+        """)
+        self.button.setEnabled(True)
 
 
 app = QApplication(sys.argv)
